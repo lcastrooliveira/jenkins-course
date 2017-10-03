@@ -1,7 +1,7 @@
 node {
     def myGradleContainer = docker.image('gradle:jdk8')
     myGradleContainer.pull()
- steps {
+ 
     stage('prep') {
         git url: 'https://github.com/lcastrooliveira/gs-gradle.git'
     }
@@ -13,14 +13,16 @@ node {
     }
     
     stage('publish') {
-      dockerBuildAndPublish {
-        repositoryName('registry/docker-gradle-demo')
-        tag('${GIT_REVISION,length=9}')
-        forcePull(false)
-        forceTag(false)
-        createFingerprints(false)
-        skipDecorate()
-      }
+        steps {
+            dockerBuildAndPublish {
+                repositoryName('registry/docker-gradle-demo')
+                tag('${GIT_REVISION,length=9}')
+                forcePull(false)
+                forceTag(false)
+                createFingerprints(false)
+                skipDecorate()
+            }
+        }
     }
 
     stage('sonar-scanner') {
@@ -29,5 +31,4 @@ node {
         sh "${sonarqubeScannerHome}/bin/sonar-scanner -e -Dsonar.host.url=http://sonarqube:9000 -Dsonar.login=${sonarLogin} -Dsonar.projectName=gs-gradle -Dsonar.projectVersion=${env.BUILD_NUMBER} -Dsonar.projectKey=GS -Dsonar.sources=complete/src/main/ -Dsonar.tests=complete/src/test/ -Dsonar.java.binaries=complete/build/classes/ -Dsonar.language=java"
       }
     }
-  }
 }
