@@ -11,6 +11,17 @@ node {
         sh 'cd complete && ./gradlew build'
       }
     }
+    
+    stage('publish') {
+        dockerBuildAndPublish {
+            repositoryName('registry/docker-gradle-demo')
+            tag('${GIT_REVISION,length=9}')
+            forcePull(false)
+            forceTag(false)
+            createFingerprints(false)
+            skipDecorate()
+        }
+    }
 
     stage('sonar-scanner') {
       def sonarqubeScannerHome = tool name: 'sonar', type: 'hudson.plugins.sonar.SonarRunnerInstallation'
