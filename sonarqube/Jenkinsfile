@@ -13,17 +13,11 @@ node {
     }
     
     
-        
-    dockerBuildAndPublish {
-        repositoryName('registry/docker-gradle-demo')
-        tag('${GIT_REVISION,length=9}')
-        forcePull(false)
-        forceTag(false)
-        createFingerprints(false)
-        skipDecorate()
+    stage('publish') {
+        docker.withRegistry('http://registry:5000') {
+            myGradleContainer.push()
+        }
     }
-        
-    
 
     stage('sonar-scanner') {
       def sonarqubeScannerHome = tool name: 'sonar', type: 'hudson.plugins.sonar.SonarRunnerInstallation'
