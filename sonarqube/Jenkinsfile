@@ -14,7 +14,7 @@ node {
     
     
     stage('publish') {
-        docker.withRegistry('registry:5000') {
+        docker.withRegistry('http://registry') {
             myGradleContainer.push()
         }
     }
