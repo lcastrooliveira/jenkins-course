@@ -14,7 +14,7 @@ node {
     
     
     stage('publish') {
-        docker.withRegistry('http://172.18.0.7:5000') {
+        docker.withRegistry('http://registry.lasse') {
             myGradleContainer.push()
         }
     }
